@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MN</title>
+<meta name="description" content="MN — دعوات ومنيو وكروت بزنس ديجيتال بـ QR Code">
+<meta name="theme-color" content="#080807">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080807;--line:rgba(201,169,106,.18);--line2:rgba(239,235,228,.1);--text:#efebe4;--muted:#8a857c;--dim:#55524c;--gold:#c9a96a;--gold2:#e6cf9c}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;font-weight:300;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;overflow-x:hidden}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.glow{position:fixed;left:50%;top:-20vh;width:120vw;height:80vh;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(201,169,106,.13),transparent 70%);z-index:0;pointer-events:none;animation:breathe 9s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.55;transform:translateX(-50%) scale(1.08)}}
+
+/* intro */
+#intro{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:56px;background:var(--bg);cursor:pointer;transition:opacity 1.4s ease,visibility 1.4s}
+#intro.gone{opacity:0;visibility:hidden}
+#intro img{width:150px;opacity:0;animation:rise 2.2s .3s cubic-bezier(.2,.7,.2,1) forwards}
+#intro .enter{font-size:12px;letter-spacing:6px;color:var(--muted);opacity:0;animation:fade 1.6s 1.8s forwards,pulse 3s 3.4s ease-in-out infinite}
+#intro .enter span{display:block;width:1px;height:38px;margin:0 auto 18px;background:linear-gradient(var(--gold),transparent)}
+@keyframes rise{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes fade{to{opacity:1}}
+@keyframes pulse{50%{opacity:.35}}
+
+main{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:72px 24px 40px}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity 1.2s ease,transform 1.2s cubic-bezier(.2,.7,.2,1)}
+body.in .reveal{opacity:1;transform:none}
+body.in .d1{transition-delay:.5s}body.in .d2{transition-delay:.8s}body.in .d3{transition-delay:1.05s}body.in .d4{transition-delay:1.3s}
+header{text-align:center;margin-bottom:60px}
+header img{width:96px;display:block;margin:0 auto}
+header .rule{width:1px;height:46px;margin:28px auto 0;background:linear-gradient(var(--gold),transparent)}
+
+.label{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--gold);letter-spacing:3px;margin-bottom:18px}
+.label::after{content:"";flex:1;height:1px;background:var(--line)}
+.section{margin-bottom:48px}
+.services{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.svc{position:relative;background:var(--bg)}
+.svc input{position:absolute;opacity:0;pointer-events:none}
+.svc label{display:flex;flex-direction:column;gap:2px;min-height:78px;justify-content:center;padding:14px 16px;cursor:pointer;transition:background .35s,color .35s}
+.svc label b{font-weight:400;font-size:15px}
+.svc label small{font-size:11.5px;color:var(--dim);transition:color .35s}
+.svc label:hover{background:rgba(201,169,106,.04)}
+.svc input:checked+label{background:rgba(201,169,106,.09);color:var(--gold2)}
+.svc input:checked+label small{color:var(--gold)}
+.svc input:checked+label::before{content:"";position:absolute;top:12px;left:12px;width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.svc input:focus-visible+label{outline:1px solid var(--gold);outline-offset:-4px}
+
+.field{margin-bottom:30px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+input[type=text],input[type=tel],input[type=date],textarea{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line2);padding:10px 0;color:var(--text);font:inherit;font-weight:400;font-size:16px;border-radius:0;transition:border-color .3s}
+input:focus,textarea:focus{outline:none;border-bottom-color:var(--gold)}
+textarea{min-height:44px;resize:vertical}
+input[type=date]{color-scheme:dark;min-height:46px}
+.err{color:#d48a8a;font-size:12px;margin-top:6px;display:none}
+.field.bad .err{display:block}
+.field.bad input{border-bottom-color:#d48a8a}
+button.send{position:relative;width:100%;margin-top:14px;border:1px solid var(--gold);background:transparent;color:var(--gold2);font:inherit;font-weight:400;font-size:15px;letter-spacing:2px;padding:18px;cursor:pointer;overflow:hidden;transition:color .45s}
+button.send::before{content:"";position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:right;transition:transform .45s cubic-bezier(.2,.7,.2,1);z-index:-1}
+button.send:hover{color:#0a0a0a}
+button.send:hover::before{transform:scaleX(1)}
+footer{text-align:center;color:var(--dim);font-size:11px;letter-spacing:4px;margin-top:64px}
+
+#sound{position:fixed;bottom:22px;left:22px;z-index:5;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:rgba(8,8,7,.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;gap:3px;cursor:pointer;opacity:0;transition:opacity 1s 1.5s}
+body.in #sound{opacity:1}
+#sound i{display:block;width:2px;height:12px;background:var(--gold);border-radius:1px;animation:eq 1.2s ease-in-out infinite}
+#sound i:nth-child(2){animation-delay:.2s;height:18px}#sound i:nth-child(3){animation-delay:.4s}
+#sound.off i{animation:none;height:3px;opacity:.6}
+@keyframes eq{50%{transform:scaleY(.35)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,#intro img,#intro .enter{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas><div class="glow"></div>
+
+<div id="intro" role="button" tabindex="0" aria-label="دخول">
+  <img src="logo.png" alt="MN">
+  <div class="enter"><span></span>اضغط للدخول</div>
+</div>
+
+<main>
+  <header class="reveal d1">
+    <img src="logo.png" alt="MN">
+    <div class="rule"></div>
+  </header>
+
+  <form id="f" novalidate>
+    <div class="section reveal d2">
+      <div class="label">الخدمة</div>
+      <div class="services">
+        <div class="svc"><input type="radio" name="svc" id="s1" value="دعوة فرح" checked><label for="s1"><b>دعوة فرح</b><small>عدّاد · لوكيشن · تأكيد حضور</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s2" value="خطوبة / كتب كتاب"><label for="s2"><b>خطوبة وكتب كتاب</b><small>دعوة أنيقة بتفاصيل اليوم</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s3" value="عيد ميلاد"><label for="s3"><b>عيد ميلاد</b><small>للكبار والأطفال</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s4" value="سبوع ومواليد"><label for="s4"><b>سبوع ومواليد</b><small>إعلان المولود ودعوة السبوع</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s5" value="حفلة تخرج"><label for="s5"><b>حفلة تخرج</b><small>دعوات الدفعة والأهل</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s6" value="إيفنت / مؤتمر"><label for="s6"><b>إيفنت ومؤتمرات</b><small>برنامج · متحدثين · تسجيل</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s7" value="منيو مطعم / كافيه"><label for="s7"><b>منيو مطعم وكافيه</b><small>أقسام · أسعار · صور</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s8" value="كارت بزنس ديجيتال"><label for="s8"><b>كارت بزنس</b><small>كل وسائل التواصل في QR</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s9" value="صفحة لينكات للبايو"><label for="s9"><b>صفحة لينكات</b><small>لينك واحد للبايو</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s10" value="كتالوج منتجات"><label for="s10"><b>كتالوج منتجات</b><small>للبراندات والمحلات</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s11" value="بروفايل شركة"><label for="s11"><b>بروفايل شركة</b><small>تعريف · خدمات · أعمال</small></label></div>
+        <div class="svc"><input type="radio" name="svc" id="s12" value="طلب خاص"><label for="s12"><b>طلب خاص</b><small>قولّنا فكرتك</small></label></div>
+      </div>
+    </div>
+
+    <div class="section reveal d3">
+      <div class="label">بياناتك</div>
+      <div class="field" id="fName">
+        <label for="name">الاسم</label>
+        <input type="text" id="name" autocomplete="name">
+        <div class="err">اكتب اسمك</div>
+      </div>
+      <div class="field" id="fPhone">
+        <label for="phone">رقم الموبايل</label>
+        <input type="tel" id="phone" autocomplete="tel" inputmode="tel" dir="ltr" style="text-align:right">
+        <div class="err">اكتب رقم صحيح</div>
+      </div>
+      <div class="field">
+        <label for="date">تاريخ المناسبة (اختياري)</label>
+        <input type="date" id="date">
+      </div>
+      <div class="field">
+        <label for="notes">تفاصيل (اختياري)</label>
+        <textarea id="notes" rows="1"></textarea>
+      </div>
+    </div>
+
+    <div class="reveal d4">
+      <button type="submit" class="send">إرسال عبر واتساب</button>
+    </div>
+  </form>
+
+  <footer class="reveal d4">MN</footer>
+</main>
+
+<button id="sound" aria-label="تشغيل / إيقاف الموسيقى"><i></i><i></i><i></i></button>
+
+<script>
+// ===== رقم الواتساب بالصيغة الدولية من غير + (مثال: 201012345678) =====
+const WHATSAPP_NUMBER = "201000000000";
+
+const $ = id => document.getElementById(id);
+
+/* ---------- خلفية: جزيئات دهبي هادية ---------- */
+(() => {
+  const c = $('bg'), x = c.getContext('2d');
+  let w, h, dpr, pts = [];
+  const resize = () => {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = c.width = innerWidth * dpr; h = c.height = innerHeight * dpr;
+    pts = Array.from({length: Math.round(innerWidth * innerHeight / 22000) + 14}, () => ({
+      x: Math.random() * w, y: Math.random() * h, r: (Math.random() * 1.3 + .3) * dpr,
+      v: (Math.random() * .12 + .04) * dpr, p: Math.random() * 6.28
+    }));
+  };
+  resize(); addEventListener('resize', resize);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const tick = t => {
+    x.clearRect(0, 0, w, h);
+    for (const p of pts) {
+      p.y -= p.v; if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+      const a = .18 + .22 * Math.sin(t / 1600 + p.p);
+      x.beginPath(); x.arc(p.x + Math.sin(t / 3000 + p.p) * 6 * dpr, p.y, p.r, 0, 6.28);
+      x.fillStyle = `rgba(214,184,124,${a})`; x.fill();
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+})();
+
+/* ---------- موسيقى هادية (Web Audio) ---------- */
+let ctx, master, playing = false, loopTimer;
+function startMusic() {
+  if (ctx) return;
+  const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+  ctx = new AC();
+  master = ctx.createGain(); master.gain.value = 0;
+  // ريفيرب بسيط
+  const len = ctx.sampleRate * 4, ir = ctx.createBuffer(2, len, ctx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6); }
+  const verb = ctx.createConvolver(); verb.buffer = ir;
+  const wet = ctx.createGain(); wet.gain.value = .55;
+  const dry = ctx.createGain(); dry.gain.value = .6;
+  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1800;
+  master.connect(lp); lp.connect(dry); lp.connect(verb); verb.connect(wet);
+  dry.connect(ctx.destination); wet.connect(ctx.destination);
+
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+  // Dmaj9 – Bm9 – Gmaj7 – A6sus
+  const chords = [[50,57,64,66,69],[47,54,62,64,69],[43,50,59,62,66],[45,52,59,62,64]];
+  const bell = [74,76,78,81,83,86];
+  const D = 7; // ثواني لكل كورد
+
+  const pad = (m, t, dur, g) => {
+    for (const det of [-6, 6]) {
+      const o = ctx.createOscillator(), v = ctx.createGain();
+      o.type = det < 0 ? 'sine' : 'triangle'; o.frequency.value = mtof(m); o.detune.value = det;
+      v.gain.setValueAtTime(0, t); v.gain.linearRampToValueAtTime(g, t + 2.2); v.gain.setValueAtTime(g, t + dur - 2); v.gain.linearRampToValueAtTime(0, t + dur + 1.5);
+      o.connect(v); v.connect(master); o.start(t); o.stop(t + dur + 1.6);
+    }
+  };
+  const ping = (m, t) => {
+    const o = ctx.createOscillator(), v = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = mtof(m);
+    v.gain.setValueAtTime(0, t); v.gain.linearRampToValueAtTime(.05, t + .02); v.gain.exponentialRampToValueAtTime(.0001, t + 3.5);
+    o.connect(v); v.connect(master); o.start(t); o.stop(t + 3.6);
+  };
+  let bar = 0, next = ctx.currentTime + .1;
+  const schedule = () => {
+    while (next < ctx.currentTime + D * 2) {
+      const ch = chords[bar % chords.length];
+      ch.forEach((m, i) => pad(m, next, D, i === 0 ? .05 : .022));
+      for (let k = 0; k < 3; k++) if (Math.random() < .7) ping(bell[Math.floor(Math.random() * bell.length)], next + .8 + k * 2 + Math.random() * .6);
+      next += D; bar++;
+    }
+  };
+  schedule(); loopTimer = setInterval(schedule, 2000);
+  master.gain.linearRampToValueAtTime(.9, ctx.currentTime + 4);
+  playing = true;
+}
+function toggleMusic() {
+  if (!ctx) { startMusic(); $('sound').classList.remove('off'); return; }
+  const t = ctx.currentTime;
+  master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t);
+  if (playing) { master.gain.linearRampToValueAtTime(0, t + .8); setTimeout(() => ctx.suspend(), 900); }
+  else { ctx.resume(); master.gain.linearRampToValueAtTime(.9, t + 1.5); }
+  playing = !playing; $('sound').classList.toggle('off', !playing);
+}
+$('sound').addEventListener('click', toggleMusic);
+
+/* ---------- الدخول ---------- */
+function enter() {
+  if (document.body.classList.contains('in')) return;
+  try { startMusic(); } catch (e) {}
+  $('intro').classList.add('gone');
+  document.body.classList.add('in');
+}
+$('intro').addEventListener('click', enter);
+$('intro').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enter(); } });
+
+/* ---------- الإرسال ---------- */
+$('f').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('name').value.trim(), phone = $('phone').value.trim();
+  const okName = name.length > 1, okPhone = /^[+\d\s-]{8,}$/.test(phone);
+  $('fName').classList.toggle('bad', !okName);
+  $('fPhone').classList.toggle('bad', !okPhone);
+  if (!okName) return $('name').focus();
+  if (!okPhone) return $('phone').focus();
+  const svc = document.querySelector('input[name=svc]:checked').value;
+  const date = $('date').value, notes = $('notes').value.trim();
+  let msg = `طلب جديد من MN\n\nالخدمة: ${svc}\nالاسم: ${name}\nالموبايل: ${phone}`;
+  if (date) msg += `\nتاريخ المناسبة: ${date}`;
+  if (notes) msg += `\nتفاصيل: ${notes}`;
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+});
+</script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  const DEFAULT_LINE_HEIGHT = 16;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  const PICK_CAPABILITIES = ["pick"];
+  const PICK_CHAIN_LENGTH = 4;
+  const PICK_MAX_TEXT_CHARS = 120;
+  const PICK_MAX_HTML_CHARS = 300;
+
+  function truncate(value, maxChars) {
+    return value.length > maxChars ? value.slice(0, maxChars - 1) + "…" : value;
+  }
+
+  function isPickableElement(element) {
+    return (
+      element instanceof Element &&
+      element !== document.documentElement &&
+      element !== document.body
+    );
+  }
+
+  function resolvePickTarget(x, y) {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    const element = document.elementFromPoint(x, y);
+    return isPickableElement(element) ? element.closest("svg") || element : null;
+  }
+
+  function pickLabel(element) {
+    if (element.id) return element.localName + "#" + element.id;
+    return [element.localName].concat(Array.from(element.classList).slice(0, 2)).join(".");
+  }
+
+  // Only attributes that help find the element in source. data-* values and URL
+  // query strings or fragments can carry tokens.
+  const PICK_ATTRIBUTES = new Set([
+    "id",
+    "class",
+    "name",
+    "type",
+    "role",
+    "alt",
+    "aria-label",
+    "href",
+    "src",
+  ]);
+
+  function pickAttributeValue(attribute) {
+    return attribute.name === "href" || attribute.name === "src"
+      ? attribute.value.split(/[?#]/)[0]
+      : attribute.value;
+  }
+
+  function describePickElement(element) {
+    const chain = [];
+    for (
+      let current = element;
+      isPickableElement(current) && chain.length < PICK_CHAIN_LENGTH;
+      current = current.parentElement
+    ) {
+      chain.unshift(current);
+    }
+    const attributes = Array.from(element.attributes)
+      .filter((attribute) => PICK_ATTRIBUTES.has(attribute.name))
+      .map((attribute) => ` ${attribute.name}="${pickAttributeValue(attribute).replace(/"/g, "&quot;")}"`)
+      .join("");
+    const text = (element.innerText || element.textContent || "").replace(/\s+/g, " ").trim();
+    return {
+      chain: chain.map(pickLabel),
+      html: truncate(`<${element.localName}${attributes}>`, PICK_MAX_HTML_CHARS),
+      text: text ? truncate(text, PICK_MAX_TEXT_CHARS) : undefined,
+    };
+  }
+
+  // Hover asks once per frame, and innerText on a large section forces layout,
+  // so only the rect is re-read while the pointer stays on the same element.
+  // Clicks ask for fresh details since the page may have changed the element.
+  let lastPick = null;
+
+  function describePickTarget(element, fresh) {
+    if (fresh || lastPick?.element !== element) {
+      lastPick = { element, details: describePickElement(element) };
+    }
+    const rect = element.getBoundingClientRect();
+    return {
+      rect: { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
+      ...lastPick.details,
+    };
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+      capabilities: PICK_CAPABILITIES,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_PICK") {
+      const element = resolvePickTarget(event.data.x, event.data.y);
+      postToTrustedTop({
+        type: "INLINE_EDIT_PICK_RESULT",
+        seq: event.data.seq,
+        target: element ? describePickTarget(element, event.data.fresh === true) : null,
+      });
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_BY") {
+      const { deltaX, deltaY, deltaMode } = event.data;
+      if (!scrollForwarding || !Number.isFinite(deltaX) || !Number.isFinite(deltaY)) return;
+      if (deltaMode !== 0 && deltaMode !== 1 && deltaMode !== 2) return;
+      const lineHeight =
+        parseFloat(getComputedStyle(document.documentElement).lineHeight) || DEFAULT_LINE_HEIGHT;
+      const scaleX = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerWidth : 1;
+      const scaleY = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerHeight : 1;
+      // The selection overlay receives the wheel event instead of this iframe.
+      // Instant scrolling preserves trackpad deltas even on smooth-scroll sites.
+      window.scrollBy({ left: deltaX * scaleX, top: deltaY * scaleY, behavior: "instant" });
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
